@@ -1,0 +1,3326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodDoggy Bangladesh - খাবার আনাও দরজায়</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --red: #e8001c;
+      --green: #006a4e;
+      --gold: #f5a623;
+      --cream: #fffbf4;
+      --dark: #1a1a2e;
+      --text-dark: #1a1a2e;
+      --text-muted: #6b7280;
+      --shadow: 0 8px 32px rgba(232,0,28,0.12);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--cream);
+      font-family: 'Hind Siliguri', sans-serif;
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* LOADER */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      transition: opacity 0.6s ease;
+    }
+
+    #loader .loader-logo {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 56px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--red), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: pulse 1s infinite alternate;
+    }
+
+    #loader .loader-sub {
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      margin-top: 10px;
+      letter-spacing: 3px;
+    }
+
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      margin-top: 24px;
+      overflow: hidden;
+    }
+
+    .loader-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), var(--gold));
+      border-radius: 2px;
+      animation: loadBar 2s ease forwards;
+    }
+
+    @keyframes loadBar {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes pulse {
+      from { opacity: 0.7; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1.03); }
+    }
+
+    /* HEADER */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255,251,244,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(232,0,28,0.1);
+      padding: 0 40px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--red) 0%, var(--gold) 100%);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 14px rgba(232,0,28,0.3);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .logo-text .brand {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      background: linear-gradient(135deg, var(--red), #a50015);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-text .tagline {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    nav a {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    nav a:hover {
+      background: rgba(232,0,28,0.07);
+      color: var(--red);
+    }
+
+    .btn-login {
+      border: 1.5px solid var(--red) !important;
+      color: var(--red) !important;
+    }
+
+    .btn-signup {
+      background: var(--red) !important;
+      color: white !important;
+      box-shadow: 0 3px 12px rgba(232,0,28,0.25);
+    }
+
+    .btn-signup:hover {
+      background: #c0001a !important;
+      transform: translateY(-1px);
+    }
+
+    .cart-btn {
+      position: relative;
+      background: var(--dark);
+      color: white !important;
+      padding: 8px 16px !important;
+      border-radius: 10px !important;
+      cursor: pointer;
+      font-size: 18px !important;
+      transition: all 0.2s;
+    }
+
+    .cart-btn:hover {
+      background: var(--red) !important;
+      transform: scale(1.05);
+    }
+
+    #cart-count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--gold);
+      color: var(--dark);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 90vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #1a1a2e 0%, #2d0a0a 50%, #006a4e22 100%);
+      z-index: 0;
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.3;
+      animation: orbMove 8s ease-in-out infinite alternate;
+    }
+
+    .orb1 {
+      width: 500px;
+      height: 500px;
+      background: var(--red);
+      top: -150px;
+      right: -100px;
+    }
+
+    .orb2 {
+      width: 350px;
+      height: 350px;
+      background: var(--gold);
+      bottom: -100px;
+      left: 100px;
+      animation-delay: 2s;
+    }
+
+    .orb3 {
+      width: 250px;
+      height: 250px;
+      background: var(--green);
+      top: 50%;
+      left: 40%;
+      animation-delay: 4s;
+    }
+
+    @keyframes orbMove {
+      from { transform: translate(0,0) scale(1); }
+      to { transform: translate(30px,20px) scale(1.1); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 60px 80px;
+      max-width: 700px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 6px 16px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      backdrop-filter: blur(8px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .hero h1 {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1.05;
+      color: white;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--red), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .typing-text {
+      border-right: 3px solid var(--gold);
+      padding-right: 4px;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { border-color: var(--gold); }
+      50% { border-color: transparent; }
+    }
+
+    .hero p {
+      color: rgba(255,255,255,0.7);
+      font-size: 18px;
+      margin-top: 18px;
+      line-height: 1.6;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    .hero-search {
+      margin-top: 36px;
+      display: flex;
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+      animation: fadeUp 0.8s 0.3s ease both;
+      max-width: 520px;
+    }
+
+    .hero-search input {
+      flex: 1;
+      border: none;
+      padding: 16px 20px;
+      font-size: 15px;
+      font-family: 'Hind Siliguri', sans-serif;
+      outline: none;
+      color: var(--dark);
+    }
+
+    .hero-search button {
+      background: var(--red);
+      color: white;
+      border: none;
+      padding: 16px 28px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Hind Siliguri', sans-serif;
+      transition: background 0.2s;
+    }
+
+    .hero-search button:hover {
+      background: #c0001a;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 36px;
+      margin-top: 48px;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+
+    .stat .num {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .stat .lbl {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .hero-food-img {
+      position: absolute;
+      right: 60px;
+      bottom: 0;
+      z-index: 2;
+      width: 420px;
+      filter: drop-shadow(0 20px 60px rgba(0,0,0,0.5));
+      animation: heroImgFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes heroImgFloat {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-20px) rotate(2deg); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MARQUEE */
+    .marquee-strip {
+      background: var(--red);
+      color: white;
+      padding: 12px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .marquee-track {
+      display: inline-flex;
+      gap: 40px;
+      animation: marquee 20s linear infinite;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 80px 60px;
+    }
+
+    .section-label {
+      display: inline-block;
+      background: rgba(232,0,28,0.08);
+      color: var(--red);
+      border-radius: 100px;
+      padding: 5px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.2;
+    }
+
+    .section-sub {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-top: 8px;
+    }
+
+    /* CATEGORIES */
+    .categories {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 36px;
+    }
+
+    .cat-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 2px solid transparent;
+      border-radius: 18px;
+      padding: 18px 24px;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      min-width: 100px;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-dark);
+    }
+
+    .cat-pill .cat-icon {
+      font-size: 32px;
+    }
+
+    .cat-pill:hover, .cat-pill.active {
+      border-color: var(--red);
+      background: rgba(232,0,28,0.04);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      color: var(--red);
+    }
+
+    /* FOOD CARDS */
+    .foods-header {
+      text-align: center;
+    }
+
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 28px;
+      margin-top: 40px;
+    }
+
+    .food-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+      transition: all 0.3s;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .food-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+    }
+
+    .food-card .badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--red);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+
+    .food-card .fav-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: transform 0.2s;
+      z-index: 2;
+    }
+
+    .food-card .fav-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .food-img-wrap {
+      height: 190px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .food-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .food-card:hover .food-img-wrap img {
+      transform: scale(1.06);
+    }
+
+    .food-card-body {
+      padding: 16px;
+    }
+
+    .food-card-body h3 {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .food-meta {
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .food-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+    }
+
+    .price {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--red);
+    }
+
+    .price .currency {
+      font-size: 16px;
+    }
+
+    .add-btn {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Hind Siliguri', sans-serif;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .add-btn:hover {
+      background: #c0001a;
+      transform: scale(1.05);
+    }
+
+    /* HOW IT WORKS */
+    .how-section {
+      background: var(--dark);
+      color: white;
+      text-align: center;
+      border-radius: 30px;
+      margin: 0 40px;
+    }
+
+    .how-section .section-label {
+      background: rgba(255,255,255,0.1);
+      color: var(--gold);
+    }
+
+    .how-section .section-title {
+      color: white;
+    }
+
+    .how-section .section-sub {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      margin-top: 48px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 12.5%;
+      right: 12.5%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--red), var(--gold), var(--green));
+      z-index: 0;
+    }
+
+    .step {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .step-num {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--red), var(--gold));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 8px 24px rgba(232,0,28,0.35);
+      transition: transform 0.3s;
+    }
+
+    .step:hover .step-num {
+      transform: scale(1.1) rotate(-5deg);
+    }
+
+    .step h3 {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .step p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* PROMO */
+    .promo-banner {
+      background: linear-gradient(135deg, #006a4e, #004d37);
+      border-radius: 24px;
+      padding: 48px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 60px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .promo-banner::before {
+      content: '🎉';
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      font-size: 180px;
+      opacity: 0.08;
+    }
+
+    .promo-text h2 {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+    }
+
+    .promo-text p {
+      margin-top: 8px;
+      font-size: 16px;
+      opacity: 0.8;
+    }
+
+    .promo-code {
+      background: rgba(255,255,255,0.15);
+      border: 2px dashed rgba(255,255,255,0.4);
+      border-radius: 12px;
+      padding: 16px 28px;
+      text-align: center;
+    }
+
+    .promo-code .code {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      color: var(--gold);
+    }
+
+    .promo-code .code-label {
+      font-size: 12px;
+      opacity: 0.6;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .promo-btn {
+      background: var(--gold);
+      color: var(--dark);
+      border: none;
+      border-radius: 12px;
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: 'Hind Siliguri', sans-serif;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(245,166,35,0.4);
+    }
+
+    .promo-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(245,166,35,0.5);
+    }
+
+    /* TESTIMONIALS */
+    .testimonials {
+      text-align: center;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .testimonial-card {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      text-align: left;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      transition: transform 0.3s;
+      position: relative;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .quote-icon {
+      font-size: 36px;
+      color: var(--red);
+      opacity: 0.3;
+      position: absolute;
+      top: 18px;
+      right: 22px;
+    }
+
+    .stars {
+      color: var(--gold);
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .testimonial-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .reviewer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .reviewer-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--red), var(--gold));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .reviewer-name {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .reviewer-loc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* WHATSAPP FLOAT */
+    .wa-float {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 9000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .wa-btn {
+      width: 64px;
+      height: 64px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 24px rgba(37,211,102,0.4);
+      cursor: pointer;
+      border: none;
+      font-size: 32px;
+      transition: all 0.3s;
+      animation: waPulse 2.5s infinite;
+    }
+
+    .wa-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 32px rgba(37,211,102,0.6);
+    }
+
+    @keyframes waPulse {
+      0%, 100% { box-shadow: 0 6px 24px rgba(37,211,102,0.4); }
+      50% { box-shadow: 0 6px 36px rgba(37,211,102,0.7), 0 0 0 8px rgba(37,211,102,0.15); }
+    }
+
+    .wa-tooltip {
+      background: var(--dark);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      display: none;
+    }
+
+    .wa-float:hover .wa-tooltip {
+      display: block;
+    }
+
+    .wa-menu {
+      background: white;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 200px;
+    }
+
+    .wa-menu.open {
+      display: flex;
+    }
+
+    .wa-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .wa-menu-item:hover {
+      background: rgba(37,211,102,0.08);
+      color: #25D366;
+    }
+
+    /* CART SIDEBAR */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 10000;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .cart-overlay.open {
+      display: block;
+      opacity: 1;
+    }
+
+    .cart-sidebar {
+      position: fixed;
+      right: -420px;
+      top: 0;
+      bottom: 0;
+      width: 400px;
+      background: white;
+      z-index: 10001;
+      padding: 30px;
+      transition: right 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+      overflow-y: auto;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+    }
+
+    .cart-sidebar.open {
+      right: 0;
+    }
+
+    .cart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .cart-header h2 {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .cart-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .cart-close:hover {
+      color: var(--red);
+    }
+
+    .cart-empty {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--text-muted);
+    }
+
+    .cart-empty .empty-icon {
+      font-size: 64px;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .cart-items {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--cream);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .cart-item img {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .cart-item-info .item-price {
+      color: var(--red);
+      font-weight: 700;
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border: 1.5px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-btn:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .qty-num {
+      font-weight: 700;
+      font-size: 15px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+
+    .remove-btn:hover {
+      color: var(--red);
+    }
+
+    .cart-footer {
+      border-top: 1px solid #f0f0f0;
+      margin-top: 24px;
+      padding-top: 20px;
+    }
+
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .cart-grand {
+      display: flex;
+      justify-content: space-between;
+      font-size: 20px;
+      font-family: 'Baloo Da 2', sans-serif;
+      font-weight: 800;
+      margin-top: 12px;
+      color: var(--dark);
+    }
+
+    /* ADDRESS FORM in Cart */
+    .addr-form {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .addr-form label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .addr-form input, .addr-form select, .addr-form textarea {
+      padding: 10px 14px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: 'Hind Siliguri', sans-serif;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .addr-form input:focus, .addr-form select:focus, .addr-form textarea:focus {
+      border-color: var(--red);
+    }
+
+    .addr-form textarea {
+      resize: none;
+      height: 70px;
+    }
+
+    .pay-methods {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .pay-opt {
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pay-opt.selected {
+      border-color: var(--green);
+      background: rgba(0,106,78,0.06);
+      color: var(--green);
+    }
+
+    .checkout-btn {
+      width: 100%;
+      margin-top: 18px;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Hind Siliguri', sans-serif;
+      transition: all 0.2s;
+      box-shadow: 0 6px 20px rgba(232,0,28,0.3);
+    }
+
+    .checkout-btn:hover {
+      background: #c0001a;
+      transform: translateY(-2px);
+    }
+
+    .wa-order-btn {
+      width: 100%;
+      margin-top: 10px;
+      background: #25D366;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Hind Siliguri', sans-serif;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .wa-order-btn:hover {
+      background: #1ebe5e;
+      transform: translateY(-2px);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 20000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+      animation: modalIn 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+
+    @keyframes modalIn {
+      from { transform: scale(0.8) translateY(40px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .modal h2 {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .modal p {
+      color: var(--text-muted);
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .order-id-box {
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 20px 0;
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: 2px;
+    }
+
+    .track-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+      margin: 20px 0;
+    }
+
+    .track-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .track-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      flex-shrink: 0;
+    }
+
+    .track-dot.done {
+      background: var(--green);
+    }
+
+    .track-dot.active {
+      background: var(--gold);
+      animation: dotPulse 1s infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+    }
+
+    .modal-close {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 32px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Hind Siliguri', sans-serif;
+      margin-top: 16px;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: #c0001a;
+    }
+
+    /* AUTH MODAL */
+    .auth-modal {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 420px;
+      width: 90%;
+      animation: modalIn 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+      position: relative;
+    }
+
+    .auth-modal h2 {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .auth-tabs {
+      display: flex;
+      background: #f3f4f6;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Hind Siliguri', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .auth-tab.active {
+      background: white;
+      color: var(--red);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .auth-form input {
+      padding: 12px 16px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'Hind Siliguri', sans-serif;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .auth-form input:focus {
+      border-color: var(--red);
+    }
+
+    .auth-submit {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Hind Siliguri', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .auth-submit:hover {
+      background: #c0001a;
+    }
+
+    .auth-divider {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      position: relative;
+      margin: 8px 0;
+    }
+
+    .auth-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    /* ADMIN PANEL */
+    .admin-panel {
+      position: fixed;
+      inset: 0;
+      background: var(--dark);
+      z-index: 30000;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .admin-panel.open {
+      display: block;
+    }
+
+    .admin-header {
+      background: linear-gradient(135deg, var(--red), #a50015);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+    }
+
+    .admin-header h1 {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .admin-close {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      border-radius: 10px;
+      padding: 8px 18px;
+      cursor: pointer;
+      font-weight: 700;
+      font-family: 'Hind Siliguri', sans-serif;
+    }
+
+    .admin-body {
+      padding: 40px;
+    }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+
+    .admin-stat {
+      background: rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .admin-stat .a-num {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    .admin-stat .a-lbl {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 4px;
+    }
+
+    .admin-section-title {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .orders-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .orders-table th {
+      text-align: left;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .orders-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .order-status {
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .status-pending {
+      background: rgba(245,166,35,0.2);
+      color: var(--gold);
+    }
+
+    .status-confirmed {
+      background: rgba(0,106,78,0.2);
+      color: #4ade80;
+    }
+
+    .status-delivered {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.5);
+    }
+
+    .wa-notify-btn {
+      background: #25D366;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Hind Siliguri', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .wa-notify-btn:hover {
+      background: #1ebe5e;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--dark);
+      color: white;
+      padding: 14px 24px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 99999;
+      transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* USER NAV */
+    .user-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(232,0,28,0.08);
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--red);
+      cursor: pointer;
+    }
+
+    /* APP SECTION */
+    .app-section {
+      background: linear-gradient(135deg, #fef9f0, #fff0f0);
+      border-radius: 30px;
+      margin: 0 60px;
+      padding: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .app-text h2 {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .app-text p {
+      margin-top: 12px;
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    .app-btns {
+      display: flex;
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .app-btn {
+      background: var(--dark);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Hind Siliguri', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .app-btn:hover {
+      background: var(--red);
+      transform: translateY(-3px);
+    }
+
+    .app-btn .btn-icon {
+      font-size: 24px;
+    }
+
+    .app-btn-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .app-btn-text .small {
+      font-size: 10px;
+      opacity: 0.7;
+      letter-spacing: 1px;
+    }
+
+    .app-btn-text .big {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .app-mockup {
+      font-size: 120px;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 60px;
+      margin-top: 80px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand .brand-name {
+      font-family: 'Baloo Da 2', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.7;
+    }
+
+    .social-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .social-btn {
+      width: 38px;
+      height: 38px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      color: white;
+    }
+
+    .social-btn:hover {
+      background: var(--red);
+      transform: translateY(-3px);
+    }
+
+    .footer-col h4 {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-col ul li a {
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .footer-col ul li a:hover {
+      color: var(--gold);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .flag {
+      font-size: 18px;
+    }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* CONTACT SECTION */
+    .contact-section {
+      background: white;
+      border-radius: 24px;
+      margin: 0 60px;
+      padding: 48px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 32px;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: var(--cream);
+      border-radius: 14px;
+      cursor: pointer;
+    }
+
+    .contact-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .contact-icon.green {
+      background: rgba(37,211,102,0.12);
+    }
+
+    .contact-icon.red {
+      background: rgba(232,0,28,0.08);
+    }
+
+    .contact-icon.blue {
+      background: rgba(59,130,246,0.08);
+    }
+
+    .contact-item-text h4 {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .contact-item-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .contact-form input, .contact-form textarea {
+      padding: 12px 16px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'Hind Siliguri', sans-serif;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .contact-form input:focus, .contact-form textarea:focus {
+      border-color: var(--red);
+    }
+
+    .contact-form textarea {
+      height: 100px;
+      resize: none;
+    }
+
+    .contact-submit {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Hind Siliguri', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .contact-submit:hover {
+      background: #c0001a;
+    }
+
+    /* RESPONSIVE */
+    @media(max-width: 900px) {
+      header { padding: 0 20px; }
+      nav a { display: none; }
+      .btn-login, .btn-signup { display: flex !important; }
+      .hero-content { padding: 40px 24px; max-width: 100%; }
+      .hero h1 { font-size: 42px; }
+      .hero-food-img { display: none; }
+      .hero-stats { gap: 20px; }
+      section { padding: 60px 24px; }
+      .how-section { margin: 0 16px; padding: 40px 24px; }
+      .steps { grid-template-columns: 1fr 1fr; gap: 24px; }
+      .steps::before { display: none; }
+      .food-grid { grid-template-columns: 1fr 1fr; }
+      .promo-banner { margin: 0 24px; flex-direction: column; text-align: center; }
+      .testimonial-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .app-section { margin: 0 24px; flex-direction: column; text-align: center; }
+      .app-btns { justify-content: center; }
+      .contact-section { margin: 0 24px; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .admin-stats { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media(max-width: 600px) {
+      .food-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 34px; }
+      .cart-sidebar { width: 100%; right: -100%; }
+    }
+
+    /* Netlify specific fix */
+    .netlify-fix {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">🐶 FoodDoggy</div>
+  <div class="loader-sub">বাংলাদেশের সেরা ফুড ডেলিভারি</div>
+  <div class="loader-bar">
+    <div class="loader-bar-inner"></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-wrap" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <div class="logo-icon">🐶</div>
+    <div class="logo-text">
+      <span class="brand">FoodDoggy</span>
+      <span class="tagline">Bangladesh's #1 Food Delivery</span>
+    </div>
+  </div>
+  <nav>
+    <a href="#foods">মেনু</a>
+    <a href="#contact-sec">যোগাযোগ</a>
+    <a href="#" onclick="openAdmin(event)">⚙️ Admin</a>
+    <div id="auth-nav">
+      <a href="#" class="btn-login" onclick="openAuth(event,'login')">লগইন</a>
+      <a href="#" class="btn-signup" onclick="openAuth(event,'signup')">সাইনআপ</a>
+    </div>
+    <a href="#" class="cart-btn" onclick="toggleCart(event)">🛒 <span id="cart-count">0</span></a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="orb1 hero-orb"></div>
+  <div class="orb2 hero-orb"></div>
+  <div class="orb3 hero-orb"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🚀 ঢাকা, চট্টগ্রাম, সিলেট সহ সারা বাংলাদেশে ডেলিভারি</div>
+    <h1>ক্ষুধার্ত? <br>আমরা আনি <span class="highlight"><span id="hero-food" class="typing-text">বিরিয়ানি</span></span><br>আপনার দোরগোড়ায়!</h1>
+    <p>মাত্র ৩০ মিনিটে গরম খাবার আপনার দরজায়। ঢাকার সেরা রেস্তোরাঁ থেকে অর্ডার করুন।</p>
+    <div class="hero-search">
+      <input type="text" placeholder="🔍  আপনার পছন্দের খাবার খুঁজুন..." id="search-input">
+      <button onclick="scrollToFood()">অর্ডার করুন</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="num" data-target="500">0</div>
+        <div class="lbl">রেস্তোরাঁ</div>
+      </div>
+      <div class="stat">
+        <div class="num" data-target="50000">0</div>
+        <div class="lbl">সন্তুষ্ট গ্রাহক</div>
+      </div>
+      <div class="stat">
+        <div class="num" data-target="30">0</div>
+        <div class="lbl">মিনিট ডেলিভারি</div>
+      </div>
+    </div>
+  </div>
+  <img class="hero-food-img" src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=80" alt="Delicious Food">
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span class="marquee-item">🍛 বিরিয়ানি</span>
+    <span class="marquee-item">🍔 বার্গার</span>
+    <span class="marquee-item">🍕 পিৎজা</span>
+    <span class="marquee-item">🍜 নুডলস</span>
+    <span class="marquee-item">🍗 ফ্রাইড চিকেন</span>
+    <span class="marquee-item">🥗 সালাদ</span>
+    <span class="marquee-item">🧆 কাবাব</span>
+    <span class="marquee-item">🍦 আইসক্রিম</span>
+    <span class="marquee-item">☕ চা & কফি</span>
+    <span class="marquee-item">💳 bKash | Nagad | COD</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="marquee-item">🍛 বিরিয়ানি</span>
+    <span class="marquee-item">🍔 বার্গার</span>
+    <span class="marquee-item">🍕 পিৎজা</span>
+    <span class="marquee-item">🍜 নুডলস</span>
+    <span class="marquee-item">🍗 ফ্রাইড চিকেন</span>
+    <span class="marquee-item">🥗 সালাদ</span>
+    <span class="marquee-item">🧆 কাবাব</span>
+    <span class="marquee-item">🍦 আইসক্রিম</span>
+    <span class="marquee-item">☕ চা & কফি</span>
+    <span class="marquee-item">💳 bKash | Nagad | COD</span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section style="text-align:center;padding-top:70px">
+  <div class="section-label">বিভাগ</div>
+  <div class="section-title">কী খেতে চান আজকে?</div>
+  <div class="categories">
+    <div class="cat-pill active" onclick="filterCategory(this,'all')"><span class="cat-icon">🍽️</span>সব কিছু</div>
+    <div class="cat-pill" onclick="filterCategory(this,'rice')"><span class="cat-icon">🍛</span>ভাত</div>
+    <div class="cat-pill" onclick="filterCategory(this,'fast')"><span class="cat-icon">🍔</span>ফাস্টফুড</div>
+    <div class="cat-pill" onclick="filterCategory(this,'grill')"><span class="cat-icon">🥩</span>গ্রিল</div>
+    <div class="cat-pill" onclick="filterCategory(this,'soup')"><span class="cat-icon">🍲</span>স্যুপ</div>
+    <div class="cat-pill" onclick="filterCategory(this,'dessert')"><span class="cat-icon">🍮</span>ডেজার্ট</div>
+    <div class="cat-pill" onclick="filterCategory(this,'drinks')"><span class="cat-icon">🥤</span>পানীয়</div>
+  </div>
+</section>
+
+<!-- FOOD SECTION -->
+<section class="foods" id="foods">
+  <div class="foods-header reveal">
+    <div class="section-label">মেনু</div>
+    <div class="section-title">জনপ্রিয় খাবার</div>
+    <div class="section-sub">ঢাকার সেরা রেস্তোরাঁ থেকে সংগৃহীত</div>
+  </div>
+  <div class="food-grid" id="food-grid">
+    <div class="food-card reveal" data-cat="rice" data-name="কাচ্চি বিরিয়ানি" data-price="350" data-img="https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&q=80">
+      <span class="badge">🔥 বেস্টসেলার</span>
+      <button class="fav-btn" onclick="toggleFav(this)">🤍</button>
+      <div class="food-img-wrap"><img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&q=80" alt="Biryani" loading="lazy"></div>
+      <div class="food-card-body">
+        <h3>কাচ্চি বিরিয়ানি</h3>
+        <div class="food-meta"><span>⭐ 4.9</span><span>🕐 30 মিনিট</span><span>🛵 বিনামূল্যে</span></div>
+        <div class="food-card-footer">
+          <div class="price"><span class="currency">৳</span>350</div>
+          <button class="add-btn" onclick="addToCart('কাচ্চি বিরিয়ানি',350,this)">+ কার্টে</button>
+        </div>
+      </div>
+    </div>
+    <div class="food-card reveal" data-cat="fast" data-name="চিজ বার্গার" data-price="220" data-img="https://images.unsplash.com/photo-1553621042-f6e147245754?w=400&q=80">
+      <span class="badge" style="background:var(--green)">🆕 নতুন</span>
+      <button class="fav-btn" onclick="toggleFav(this)">🤍</button>
+      <div class="food-img-wrap"><img src="https://images.unsplash.com/photo-1553621042-f6e147245754?w=400&q=80" alt="Burger" loading="lazy"></div>
+      <div class="food-card-body">
+        <h3>চিজ বার্গার</h3>
+        <div class="food-meta"><span>⭐ 4.7</span><span>🕐 20 মিনিট</span><span>🛵 ৳20</span></div>
+        <div class="food-card-footer">
+          <div class="price"><span class="currency">৳</span>220</div>
+          <button class="add-btn" onclick="addToCart('চিজ বার্গার',220,this)">+ কার্টে</button>
+        </div>
+      </div>
+    </div>
+    <div class="food-card reveal" data-cat="fast" data-name="পেপেরনি পিৎজা" data-price="480" data-img="https://images.unsplash.com/photo-1594007654729-407eedc4be65?w=400&q=80">
+      <span class="badge" style="background:var(--gold);color:var(--dark)">⚡ দ্রুত</span>
+      <button class="fav-btn" onclick="toggleFav(this)">🤍</button>
+      <div class="food-img-wrap"><img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65?w=400&q=80" alt="Pizza" loading="lazy"></div>
+      <div class="food-card-body">
+        <h3>পেপেরনি পিৎজা</h3>
+        <div class="food-meta"><span>⭐ 4.8</span><span>🕐 25 মিনিট</span><span>🛵 বিনামূল্যে</span></div>
+        <div class="food-card-footer">
+          <div class="price"><span class="currency">৳</span>480</div>
+          <button class="add-btn" onclick="addToCart('পেপেরনি পিৎজা',480,this)">+ কার্টে</button>
+        </div>
+      </div>
+    </div>
+    <div class="food-card reveal" data-cat="grill" data-name="ফ্রাইড চিকেন" data-price="290" data-img="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80">
+      <button class="fav-btn" onclick="toggleFav(this)">🤍</button>
+      <div class="food-img-wrap"><img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80" alt="Fried Chicken" loading="lazy"></div>
+      <div class="food-card-body">
+        <h3>ফ্রাইড চিকেন</h3>
+        <div class="food-meta"><span>⭐ 4.6</span><span>🕐 25 মিনিট</span><span>🛵 ৳15</span></div>
+        <div class="food-card-footer">
+          <div class="price"><span class="currency">৳</span>290</div>
+          <button class="add-btn" onclick="addToCart('ফ্রাইড চিকেন',290,this)">+ কার্টে</button>
+        </div>
+      </div>
+    </div>
+    <div class="food-card reveal" data-cat="soup" data-name="মোমো স্যুপ" data-price="180" data-img="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=400&q=80">
+      <span class="badge" style="background:#6366f1">❄️ ঠান্ডা দিনে</span>
+      <button class="fav-btn" onclick="toggleFav(this)">🤍</button>
+      <div class="food-img-wrap"><img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=400&q=80" alt="Momo" loading="lazy"></div>
+      <div class="food-card-body">
+        <h3>মোমো স্যুপ</h3>
+        <div class="food-meta"><span>⭐ 4.5</span><span>🕐 20 মিনিট</span><span>🛵 ৳20</span></div>
+        <div class="food-card-footer">
+          <div class="price"><span class="currency">৳</span>180</div>
+          <button class="add-btn" onclick="addToCart('মোমো স্যুপ',180,this)">+ কার্টে</button>
+        </div>
+      </div>
+    </div>
+    <div class="food-card reveal" data-cat="dessert" data-name="মিষ্টি রসগোল্লা" data-price="120" data-img="https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c?w=400&q=80">
+      <button class="fav-btn" onclick="toggleFav(this)">🤍</button>
+      <div class="food-img-wrap"><img src="https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c?w=400&q=80" alt="Dessert" loading="lazy"></div>
+      <div class="food-card-body">
+        <h3>মিষ্টি রসগোল্লা</h3>
+        <div class="food-meta"><span>⭐ 4.9</span><span>🕐 15 মিনিট</span><span>🛵 বিনামূল্যে</span></div>
+        <div class="food-card-footer">
+          <div class="price"><span class="currency">৳</span>120</div>
+          <button class="add-btn" onclick="addToCart('মিষ্টি রসগোল্লা',120,this)">+ কার্টে</button>
+        </div>
+      </div>
+    </div>
+    <div class="food-card reveal" data-cat="rice" data-name="মাটন রোস্ট" data-price="420" data-img="https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&q=80">
+      <span class="badge" style="background:var(--green)">🌿 স্পেশাল</span>
+      <button class="fav-btn" onclick="toggleFav(this)">🤍</button>
+      <div class="food-img-wrap"><img src="https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&q=80" alt="Mutton" loading="lazy"></div>
+      <div class="food-card-body">
+        <h3>মাটন রোস্ট</h3>
+        <div class="food-meta"><span>⭐ 4.8</span><span>🕐 40 মিনিট</span><span>🛵 ৳25</span></div>
+        <div class="food-card-footer">
+          <div class="price"><span class="currency">৳</span>420</div>
+          <button class="add-btn" onclick="addToCart('মাটন রোস্ট',420,this)">+ কার্টে</button>
+        </div>
+      </div>
+    </div>
+    <div class="food-card reveal" data-cat="drinks" data-name="লাচ্ছি শেক" data-price="90" data-img="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=400&q=80">
+      <button class="fav-btn" onclick="toggleFav(this)">🤍</button>
+      <div class="food-img-wrap"><img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=400&q=80" alt="Lassi" loading="lazy"></div>
+      <div class="food-card-body">
+        <h3>লাচ্ছি শেক</h3>
+        <div class="food-meta"><span>⭐ 4.7</span><span>🕐 10 মিনিট</span><span>🛵 বিনামূল্যে</span></div>
+        <div class="food-card-footer">
+          <div class="price"><span class="currency">৳</span>90</div>
+          <button class="add-btn" onclick="addToCart('লাচ্ছি শেক',90,this)">+ কার্টে</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div class="how-section reveal" style="padding:60px">
+  <div class="section-label">কীভাবে কাজ করে</div>
+  <div class="section-title">মাত্র ৪টি ধাপে</div>
+  <div class="section-sub">সহজ, দ্রুত, নির্ভরযোগ্য</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">📍</div>
+      <h3>ঠিকানা দিন</h3>
+      <p>আপনার ডেলিভারি লোকেশন সিলেক্ট করুন</p>
+    </div>
+    <div class="step">
+      <div class="step-num">🍽️</div>
+      <h3>খাবার বেছে নিন</h3>
+      <p>মেনু থেকে পছন্দের খাবার যোগ করুন</p>
+    </div>
+    <div class="step">
+      <div class="step-num">💳</div>
+      <h3>পেমেন্ট করুন</h3>
+      <p>bKash, Nagad, COD সহ সব মাধ্যমে</p>
+    </div>
+    <div class="step">
+      <div class="step-num">🚴</div>
+      <h3>উপভোগ করুন!</h3>
+      <p>৩০ মিনিটেই গরম খাবার আপনার দরজায়</p>
+    </div>
+  </div>
+</div>
+
+<!-- PROMO -->
+<div class="promo-banner reveal" style="margin-top:40px">
+  <div class="promo-text">
+    <h2>প্রথম অর্ডারে <span style="color:var(--gold)">৳১০০ ছাড়!</span></h2>
+    <p>শুধু নতুন গ্রাহকদের জন্য বিশেষ অফার। আজই নিন!</p>
+  </div>
+  <div class="promo-code">
+    <div class="code-label">কুপন কোড ব্যবহার করুন</div>
+    <div class="code">FOODBD100</div>
+  </div>
+  <button class="promo-btn" onclick="copyCode()">কোড কপি করুন 📋</button>
+</div>
+
+<!-- APP SECTION -->
+<div class="app-section reveal" style="margin-top:80px">
+  <div class="app-text">
+    <div class="section-label">অ্যাপ ডাউনলোড</div>
+    <div class="section-title">মোবাইল অ্যাপ দিয়ে<br>আরও সহজে অর্ডার করুন</div>
+    <p>এক্সক্লুসিভ অ্যাপ অফার পান। লাইভ ট্র্যাক করুন আপনার অর্ডার।</p>
+    <div class="app-btns">
+      <button class="app-btn"><span class="btn-icon">🍎</span>
+        <div class="app-btn-text"><span class="small">Download on the</span><span class="big">App Store</span></div>
+      </button>
+      <button class="app-btn"><span class="btn-icon">🤖</span>
+        <div class="app-btn-text"><span class="small">Get it on</span><span class="big">Google Play</span></div>
+      </button>
+    </div>
+  </div>
+  <div class="app-mockup">📱</div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-label">রিভিউ</div>
+  <div class="section-title">গ্রাহকরা যা বলেন</div>
+  <div class="testimonial-grid">
+    <div class="testimonial-card reveal">
+      <div class="quote-icon">"</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <p>দারুণ সার্ভিস! কাচ্চি বিরিয়ানি মাত্র ২৫ মিনিটে এসে গেল। খাবার একদম গরম ছিল। প্রতিদিন এখন এখান থেকেই অর্ডার করি।</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">👨</div>
+        <div>
+          <div class="reviewer-name">রাহুল আহমেদ</div>
+          <div class="reviewer-loc">📍 গুলশান, ঢাকা</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="quote-icon">"</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <p>bKash দিয়ে পেমেন্ট করা সুবিধাজনক। ডেলিভারি বয়েরা খুব ভদ্র। মুরগির রোস্ট অসাধারণ ছিল। সবাইকে রেকমেন্ড করব।</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">👩</div>
+        <div>
+          <div class="reviewer-name">নাফিসা ইসলাম</div>
+          <div class="reviewer-loc">📍 ধানমন্ডি, ঢাকা</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="quote-icon">"</div>
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <p>চট্টগ্রামে এত ভালো ফুড ডেলিভারি আগে পাইনি। প্রথম অর্ডারে ১০০ টাকা ছাড় পেলাম। অ্যাপটাও ব্যবহার করতে সহজ।</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">🧑</div>
+        <div>
+          <div class="reviewer-name">করিম হোসেন</div>
+          <div class="reviewer-loc">📍 আগ্রাবাদ, চট্টগ্রাম</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section id="contact-sec" style="padding:60px">
+  <div class="contact-section reveal">
+    <div class="section-label">যোগাযোগ</div>
+    <div class="section-title">আমাদের সাথে কথা বলুন</div>
+    <div class="section-sub">যেকোনো সমস্যায় আমরা সবসময় পাশে আছি</div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item" onclick="openWhatsApp('হ্যালো FoodDoggy! আমি সাহায্য চাই।')">
+          <div class="contact-icon green">💬</div>
+          <div class="contact-item-text">
+            <h4>WhatsApp সাপোর্ট</h4>
+            <p>+880 1810-930935 · ২৪/৭ সহায়তা</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon red">📞</div>
+          <div class="contact-item-text">
+            <h4>হটলাইন</h4>
+            <p>01810-930935 (সকাল ৮টা - রাত ১১টা)</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon blue">📧</div>
+          <div class="contact-item-text">
+            <h4>ইমেইল</h4>
+            <p>support@fooddoggy.com.bd</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon" style="background:rgba(245,166,35,0.1)">📍</div>
+          <div class="contact-item-text">
+            <h4>অফিস</h4>
+            <p>গুলশান-২, ঢাকা-১২১২, বাংলাদেশ</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <form class="contact-form" onsubmit="submitContact(event)">
+          <input type="text" placeholder="আপনার নাম" id="c-name" required>
+          <input type="tel" placeholder="মোবাইল নম্বর (01XXXXXXXXX)" id="c-phone" required>
+          <input type="text" placeholder="বিষয়" id="c-subject" required>
+          <textarea placeholder="আপনার বার্তা লিখুন..." id="c-msg" required></textarea>
+          <button type="submit" class="contact-submit">বার্তা পাঠান ✉️</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="brand-name">🐶 FoodDoggy Bangladesh</div>
+      <p>বাংলাদেশের সেরা ফুড ডেলিভারি প্ল্যাটফর্ম। ঢাকা, চট্টগ্রাম, সিলেট সহ সারাদেশে দ্রুত ও সুস্বাদু খাবার ডেলিভারি।</p>
+      <div class="social-row">
+        <button class="social-btn">📘</button>
+        <button class="social-btn">📸</button>
+        <button class="social-btn">🐦</button>
+        <button class="social-btn" onclick="openWhatsApp('হ্যালো FoodDoggy!')">💬</button>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>কোম্পানি</h4>
+      <ul>
+        <li><a href="#">আমাদের সম্পর্কে</a></li>
+        <li><a href="#">ক্যারিয়ার</a></li>
+        <li><a href="#">ব্লগ</a></li>
+        <li><a href="#" onclick="openAdmin(event)">⚙️ Admin Panel</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>সহায়তা</h4>
+      <ul>
+        <li><a href="#">সাহায্য কেন্দ্র</a></li>
+        <li><a href="#" onclick="openWhatsApp('আমার অর্ডার ট্র্যাক করতে চাই')">অর্ডার ট্র্যাক</a></li>
+        <li><a href="#">রিফান্ড নীতি</a></li>
+        <li><a href="#contact-sec">যোগাযোগ করুন</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>পেমেন্ট</h4>
+      <ul>
+        <li><a href="#">💚 bKash</a></li>
+        <li><a href="#">🟠 Nagad</a></li>
+        <li><a href="#">🔵 Rocket</a></li>
+        <li><a href="#">💳 কার্ড</a></li>
+        <li><a href="#">💵 ক্যাশ অন ডেলিভারি</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© ২০২৬ FoodDoggy Bangladesh. সর্বস্বত্ব সংরক্ষিত।</span>
+    <span><span class="flag">🇧🇩</span> Made with ❤️ in Bangladesh</span>
+    <span>📞 01810-930935</span>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<div class="wa-float">
+  <div class="wa-menu" id="wa-menu">
+    <button class="wa-menu-item" onclick="openWhatsApp('হ্যালো! আমি একটি অর্ডার দিতে চাই।')">🍽️ অর্ডার করুন</button>
+    <button class="wa-menu-item" onclick="openWhatsApp('আমার অর্ডারের স্ট্যাটাস জানতে চাই।')">🔍 অর্ডার ট্র্যাক করুন</button>
+    <button class="wa-menu-item" onclick="openWhatsApp('আমার একটি অভিযোগ আছে।')">⚠️ অভিযোগ জানান</button>
+    <button class="wa-menu-item" onclick="openWhatsApp('আমি রেস্তোরাঁ যোগ করতে চাই।')">🏪 রেস্তোরাঁ যোগ করুন</button>
+  </div>
+  <div class="wa-tooltip">WhatsApp এ কথা বলুন</div>
+  <button class="wa-btn" onclick="toggleWaMenu()">💬</button>
+</div>
+
+<!-- CART -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <h2>🛒 আপনার কার্ট</h2>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div id="cart-body"></div>
+</div>
+
+<!-- ORDER CONFIRM MODAL -->
+<div class="modal-overlay" id="order-modal">
+  <div class="modal">
+    <div style="font-size:60px;margin-bottom:16px">🎉</div>
+    <h2>অর্ডার কনফার্ম!</h2>
+    <p>আপনার অর্ডার সফলভাবে গ্রহণ করা হয়েছে।</p>
+    <div class="order-id-box" id="order-id-display">#FD-000000</div>
+    <div class="track-steps">
+      <div class="track-step">
+        <div class="track-dot done"></div>
+        <span>✅ অর্ডার কনফার্ম হয়েছে</span>
+      </div>
+      <div class="track-step">
+        <div class="track-dot active"></div>
+        <span>👨‍🍳 রেস্তোরাঁ প্রস্তুত করছে...</span>
+      </div>
+      <div class="track-step">
+        <div class="track-dot"></div>
+        <span>🛵 ডেলিভারি ম্যান পথে</span>
+      </div>
+      <div class="track-step">
+        <div class="track-dot"></div>
+        <span>🏠 আপনার দরজায় পৌঁছে দেওয়া হবে</span>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--green);font-weight:600">WhatsApp এ আপডেট পাবেন: <strong>01810-930935</strong></p>
+    <button class="modal-close" onclick="closeOrderModal()">ঠিক আছে! 👍</button>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="auth-modal" style="position:relative">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="login-tab" onclick="switchAuthTab('login')">লগইন</button>
+      <button class="auth-tab" id="signup-tab" onclick="switchAuthTab('signup')">সাইনআপ</button>
+    </div>
+    <div id="login-form">
+      <h2>স্বাগতম! 🐶</h2>
+      <div class="auth-form">
+        <input type="tel" id="login-phone" placeholder="মোবাইল নম্বর (01XXXXXXXXX)">
+        <input type="password" id="login-pass" placeholder="পাসওয়ার্ড">
+        <button class="auth-submit" onclick="doLogin()">লগইন করুন</button>
+        <p style="text-align:center;font-size:13px;color:var(--text-muted)">অ্যাকাউন্ট নেই? <span style="color:var(--red);cursor:pointer;font-weight:700" onclick="switchAuthTab('signup')">সাইনআপ করুন</span></p>
+      </div>
+    </div>
+    <div id="signup-form" style="display:none">
+      <h2>নতুন অ্যাকাউন্ট 🎉</h2>
+      <div class="auth-form">
+        <input type="text" id="su-name" placeholder="আপনার নাম">
+        <input type="tel" id="su-phone" placeholder="মোবাইল নম্বর (01XXXXXXXXX)">
+        <input type="email" id="su-email" placeholder="ইমেইল (ঐচ্ছিক)">
+        <input type="password" id="su-pass" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)">
+        <input type="text" id="su-addr" placeholder="ডিফল্ট ঠিকানা">
+        <button class="auth-submit" onclick="doSignup()">অ্যাকাউন্ট তৈরি করুন</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="admin-panel">
+  <div class="admin-header">
+    <h1>🐶 FoodDoggy — Admin Dashboard</h1>
+    <div style="display:flex;gap:12px;align-items:center">
+      <span style="font-size:13px;opacity:0.7">📞 01810-930935</span>
+      <button class="admin-close" onclick="closeAdmin()">✕ বন্ধ করুন</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="admin-stats" id="admin-stats"></div>
+    <div class="admin-section-title">📋 সমস্ত অর্ডার</div>
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>অর্ডার ID</th>
+          <th>গ্রাহক</th>
+          <th>ঠিকানা</th>
+          <th>আইটেম</th>
+          <th>মোট</th>
+          <th>পেমেন্ট</th>
+          <th>স্ট্যাটাস</th>
+          <th>WhatsApp</th>
+        </tr>
+      </thead>
+      <tbody id="orders-tbody"></tbody>
+    </table>
+    <div style="margin-top:40px">
+      <div class="admin-section-title">👥 নিবন্ধিত ব্যবহারকারী</div>
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>নাম</th>
+            <th>মোবাইল</th>
+            <th>ইমেইল</th>
+            <th>ঠিকানা</th>
+            <th>নিবন্ধনের তারিখ</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:40px">
+      <div class="admin-section-title">💬 যোগাযোগ বার্তা</div>
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>নাম</th>
+            <th>মোবাইল</th>
+            <th>বিষয়</th>
+            <th>বার্তা</th>
+            <th>তারিখ</th>
+          </tr>
+        </thead>
+        <tbody id="contacts-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- Netlify redirect handler -->
+<script>
+  // Handle client-side routing for Netlify
+  if (window.location.pathname !== '/' && !window.location.pathname.includes('.')) {
+    window.history.replaceState(null, null, '/');
+  }
+</script>
+
+<script>
+  // =====================================================
+  // ======== DATABASE (localStorage backend) =========
+  // =====================================================
+  const DB = {
+    get(key) { 
+      try { 
+        return JSON.parse(localStorage.getItem('fd_' + key)) || []; 
+      } catch { 
+        return []; 
+      }
+    },
+    set(key, val) { 
+      localStorage.setItem('fd_' + key, JSON.stringify(val)); 
+    },
+    getOne(key) { 
+      try { 
+        return JSON.parse(localStorage.getItem('fd_' + key)); 
+      } catch { 
+        return null; 
+      }
+    },
+    setOne(key, val) { 
+      localStorage.setItem('fd_' + key, JSON.stringify(val)); 
+    }
+  };
+
+  // Tables: orders, users, contacts, cart, currentUser
+  function dbSaveOrder(order) {
+    const orders = DB.get('orders');
+    orders.unshift(order);
+    DB.set('orders', orders);
+  }
+  
+  function dbGetOrders() { 
+    return DB.get('orders'); 
+  }
+  
+  function dbSaveUser(user) {
+    const users = DB.get('users');
+    users.push(user);
+    DB.set('users', users);
+  }
+  
+  function dbGetUsers() { 
+    return DB.get('users'); 
+  }
+  
+  function dbFindUser(phone) { 
+    return DB.get('users').find(u => u.phone === phone); 
+  }
+  
+  function dbSaveContact(c) {
+    const contacts = DB.get('contacts');
+    contacts.unshift(c);
+    DB.set('contacts', contacts);
+  }
+  
+  function dbGetContacts() { 
+    return DB.get('contacts'); 
+  }
+  
+  function dbSetSession(user) { 
+    DB.setOne('session', user); 
+  }
+  
+  function dbGetSession() { 
+    return DB.getOne('session'); 
+  }
+  
+  function dbClearSession() { 
+    localStorage.removeItem('fd_session'); 
+  }
+  
+  function generateOrderId() { 
+    return 'FD-' + Math.random().toString(36).substr(2,6).toUpperCase(); 
+  }
+
+  // =====================================================
+  // ======== LOADER =========
+  // =====================================================
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      const loader = document.getElementById('loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(function() { 
+          if (loader) loader.style.display = 'none'; 
+        }, 600);
+      }
+      initSession();
+      startCounters();
+    }, 2200);
+  });
+
+  // =====================================================
+  // ======== TYPING ANIMATION =========
+  // =====================================================
+  const foods = ['বিরিয়ানি', 'পিৎজা', 'বার্গার', 'ফ্রাইড চিকেন', 'মিষ্টি', 'নুডলস'];
+  let fIdx = 0;
+  const heroFood = document.getElementById('hero-food');
+  
+  if (heroFood) {
+    heroFood.style.transition = 'opacity 0.4s';
+    setInterval(function() {
+      heroFood.style.opacity = '0';
+      setTimeout(function() { 
+        fIdx = (fIdx + 1) % foods.length; 
+        heroFood.textContent = foods[fIdx]; 
+        heroFood.style.opacity = '1'; 
+      }, 400);
+    }, 2200);
+  }
+
+  // =====================================================
+  // ======== COUNTERS =========
+  // =====================================================
+  function startCounters() {
+    document.querySelectorAll('.stat .num').forEach(function(el) {
+      const target = parseInt(el.dataset.target);
+      let c = 0; 
+      const inc = target / 50;
+      const t = setInterval(function() {
+        c = Math.min(c + inc, target);
+        el.textContent = Math.floor(c).toLocaleString() + (target >= 1000 ? '+' : target === 30 ? ' মিনিট' : '');
+        if (c >= target) clearInterval(t);
+      }, 40);
+    });
+  }
+
+  // =====================================================
+  // ======== SCROLL REVEAL =========
+  // =====================================================
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { 
+      if (e.isIntersecting) e.target.classList.add('visible'); 
+    });
+  }, { threshold: 0.1 });
+  
+  document.querySelectorAll('.reveal').forEach(function(el) { 
+    observer.observe(el); 
+  });
+
+  // =====================================================
+  // ======== SCROLL + HEADER =========
+  // =====================================================
+  window.addEventListener('scroll', function() {
+    const header = document.querySelector('header');
+    if (header) {
+      header.style.boxShadow = window.scrollY > 20 ? '0 4px 24px rgba(0,0,0,0.1)' : 'none';
+    }
+  });
+  
+  function scrollToFood() { 
+    document.getElementById('foods').scrollIntoView({ behavior: 'smooth' }); 
+  }
+
+  // =====================================================
+  // ======== CART STATE =========
+  // =====================================================
+  let cart = [];
+  let selectedPayment = 'COD';
+
+  function addToCart(name, price, btn) {
+    const existing = cart.find(function(i) { 
+      return i.name === name; 
+    });
+    
+    if (existing) { 
+      existing.qty++; 
+    } else {
+      const card = btn.closest('.food-card');
+      const img = card ? card.querySelector('img').src : '';
+      cart.push({ name: name, price: price, qty: 1, img: img });
+    }
+    updateCartUI();
+    showToast('🍴 "' + name + '" কার্টে যোগ হয়েছে!');
+    
+    const btn2 = document.querySelector('.cart-btn');
+    if (btn2) {
+      btn2.style.transform = 'scale(1.2)';
+      setTimeout(function() { 
+        if (btn2) btn2.style.transform = ''; 
+      }, 300);
+    }
+  }
+
+  function changeQty(idx, delta) {
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    updateCartUI();
+  }
+  
+  function removeItem(idx) { 
+    cart.splice(idx, 1); 
+    updateCartUI(); 
+  }
+
+  function updateCartUI() {
+    const total = cart.reduce(function(s, i) { 
+      return s + i.qty; 
+    }, 0);
+    document.getElementById('cart-count').textContent = total;
+    renderCart();
+  }
+
+  function renderCart() {
+    const body = document.getElementById('cart-body');
+    if (!body) return;
+    
+    if (cart.length === 0) {
+      body.innerHTML = '<div class="cart-empty"><span class="empty-icon">🛒</span><p>আপনার কার্ট খালি</p><p style="margin-top:8px;font-size:13px;color:var(--text-muted)">কিছু সুস্বাদু খাবার যোগ করুন!</p></div>';
+      return;
+    }
+    
+    const subtotal = cart.reduce(function(s, i) { 
+      return s + i.price * i.qty; 
+    }, 0);
+    const delivery = 30;
+    const discount = applyCoupon ? 100 : 0;
+    const total = subtotal + delivery - discount;
+
+    const session = dbGetSession();
+
+    body.innerHTML = `
+      <div class="cart-items">
+        ${cart.map(function(item, idx) {
+          return `
+            <div class="cart-item">
+              <img src="${item.img}" alt="${item.name}">
+              <div class="cart-item-info">
+                <h4>${item.name}</h4>
+                <div class="item-price">৳${(item.price * item.qty).toLocaleString()}</div>
+              </div>
+              <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
+                <span class="qty-num">${item.qty}</span>
+                <button class="qty-btn" onclick="changeQty(${idx},1)">+</button>
+              </div>
+              <button class="remove-btn" onclick="removeItem(${idx})">🗑️</button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+      <div class="addr-form">
+        <label>📍 ডেলিভারি ঠিকানা</label>
+        <input type="text" id="del-name" placeholder="আপনার নাম" value="${session ? session.name : ''}">
+        <input type="tel" id="del-phone" placeholder="মোবাইল নম্বর" value="${session ? session.phone : ''}">
+        <input type="text" id="del-area" placeholder="এলাকা / থানা" value="${session && session.address ? session.address : ''}">
+        <textarea id="del-addr" placeholder="বিস্তারিত ঠিকানা (বাড়ি নম্বর, রাস্তা...)"></textarea>
+        <label>💳 পেমেন্ট পদ্ধতি</label>
+        <div class="pay-methods">
+          <button class="pay-opt ${selectedPayment === 'COD' ? 'selected' : ''}" onclick="selectPay('COD',this)">💵 ক্যাশ</button>
+          <button class="pay-opt ${selectedPayment === 'bKash' ? 'selected' : ''}" onclick="selectPay('bKash',this)">💚 bKash</button>
+          <button class="pay-opt ${selectedPayment === 'Nagad' ? 'selected' : ''}" onclick="selectPay('Nagad',this)">🟠 Nagad</button>
+          <button class="pay-opt ${selectedPayment === 'Rocket' ? 'selected' : ''}" onclick="selectPay('Rocket',this)">🔵 Rocket</button>
+        </div>
+        <label>🏷️ কুপন কোড</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="coupon-input" placeholder="কুপন কোড (FOODBD100)" style="flex:1">
+          <button onclick="checkCoupon()" style="background:var(--green);color:white;border:none;border-radius:10px;padding:0 16px;cursor:pointer;font-weight:700;font-family:'Hind Siliguri',sans-serif">প্রয়োগ</button>
+        </div>
+      </div>
+      <div class="cart-footer">
+        <div class="cart-total-row"><span>সাবটোটাল</span><span>৳${subtotal.toLocaleString()}</span></div>
+        <div class="cart-total-row"><span>ডেলিভারি চার্জ</span><span>৳${delivery}</span></div>
+        ${discount > 0 ? '<div class="cart-total-row" style="color:var(--green)"><span>🎉 কুপন ছাড়</span><span>-৳' + discount + '</span></div>' : ''}
+        <div class="cart-grand"><span>মোট</span><span>৳${total.toLocaleString()}</span></div>
+        <button class="checkout-btn" onclick="placeOrder()">✅ অর্ডার দিন</button>
+        <button class="wa-order-btn" onclick="orderViaWhatsApp()">💬 WhatsApp এ অর্ডার করুন</button>
+      </div>
+    `;
+  }
+
+  function selectPay(method, btn) {
+    selectedPayment = method;
+    document.querySelectorAll('.pay-opt').forEach(function(b) { 
+      b.classList.remove('selected'); 
+    });
+    btn.classList.add('selected');
+  }
+
+  // =====================================================
+  // ======== COUPON =========
+  // =====================================================
+  let applyCoupon = false;
+  
+  function checkCoupon() {
+    const input = document.getElementById('coupon-input');
+    const code = input ? input.value.trim().toUpperCase() : '';
+    if (code === 'FOODBD100') {
+      applyCoupon = true;
+      renderCart();
+      showToast('🎉 কুপন প্রয়োগ হয়েছে! ৳১০০ ছাড় পেয়েছেন');
+    } else {
+      showToast('❌ অবৈধ কুপন কোড');
+    }
+  }
+
+  // =====================================================
+  // ======== PLACE ORDER =========
+  // =====================================================
+  function placeOrder() {
+    const nameInput = document.getElementById('del-name');
+    const phoneInput = document.getElementById('del-phone');
+    const areaInput = document.getElementById('del-area');
+    const addrInput = document.getElementById('del-addr');
+    
+    const name = nameInput ? nameInput.value.trim() : '';
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+    const area = areaInput ? areaInput.value.trim() : '';
+    const addr = addrInput ? addrInput.value.trim() : '';
+    
+    if (!name || !phone || !area) { 
+      showToast('⚠️ নাম, ফোন ও এলাকা দিন'); 
+      return; 
+    }
+    if (!/^01[3-9]\d{8}$/.test(phone)) { 
+      showToast('⚠️ সঠিক মোবাইল নম্বর দিন'); 
+      return; 
+    }
+
+    const subtotal = cart.reduce(function(s, i) { 
+      return s + i.price * i.qty; 
+    }, 0);
+    const discount = applyCoupon ? 100 : 0;
+    const total = subtotal + 30 - discount;
+    const orderId = generateOrderId();
+    
+    const order = {
+      id: orderId,
+      customerName: name,
+      phone: phone,
+      address: area + (addr ? ', ' + addr : ''),
+      items: cart.map(function(i) { 
+        return i.name + ' x' + i.qty; 
+      }).join(', '),
+      total: total,
+      payment: selectedPayment,
+      status: 'confirmed',
+      date: new Date().toLocaleString('bn-BD')
+    };
+    dbSaveOrder(order);
+
+    const orderDisplay = document.getElementById('order-id-display');
+    if (orderDisplay) orderDisplay.textContent = '#' + orderId;
+    
+    const orderModal = document.getElementById('order-modal');
+    if (orderModal) orderModal.classList.add('open');
+
+    cart = [];
+    applyCoupon = false;
+    selectedPayment = 'COD';
+    updateCartUI();
+    closeCart();
+  }
+
+  function closeOrderModal() {
+    const orderModal = document.getElementById('order-modal');
+    if (orderModal) orderModal.classList.remove('open');
+    showToast('🐶 অর্ডার গ্রহণ করা হয়েছে! ধন্যবাদ!');
+  }
+
+  // =====================================================
+  // ======== WHATSAPP ORDER =========
+  // =====================================================
+  function orderViaWhatsApp() {
+    const nameInput = document.getElementById('del-name');
+    const phoneInput = document.getElementById('del-phone');
+    const areaInput = document.getElementById('del-area');
+    
+    const name = nameInput ? nameInput.value.trim() : 'গ্রাহক';
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+    const area = areaInput ? areaInput.value.trim() : '';
+    
+    const subtotal = cart.reduce(function(s, i) { 
+      return s + i.price * i.qty; 
+    }, 0);
+    const total = subtotal + 30 - (applyCoupon ? 100 : 0);
+    const items = cart.map(function(i) { 
+      return '• ' + i.name + ' x' + i.qty + ' = ৳' + (i.price * i.qty); 
+    }).join('\n');
+    
+    const msg = '🐶 *FoodDoggy Bangladesh Order*\n\n👤 নাম: ' + name + '\n📞 ফোন: ' + phone + '\n📍 এলাকা: ' + area + '\n\n🍽️ *অর্ডার:*\n' + items + '\n\n💰 সাবটোটাল: ৳' + subtotal + '\n🛵 ডেলিভারি: ৳30\n' + (applyCoupon ? '🎉 ছাড়: -৳100\n' : '') + '💵 *মোট: ৳' + total + '*\n💳 পেমেন্ট: ' + selectedPayment;
+    
+    openWhatsApp(msg);
+  }
+
+  function openWhatsApp(msg) {
+    const number = '8801810930935';
+    const url = 'https://wa.me/' + number + '?text=' + encodeURIComponent(msg);
+    window.open(url, '_blank');
+  }
+
+  let waMenuOpen = false;
+  
+  function toggleWaMenu() {
+    waMenuOpen = !waMenuOpen;
+    const menu = document.getElementById('wa-menu');
+    if (menu) menu.classList.toggle('open', waMenuOpen);
+  }
+
+  // =====================================================
+  // ======== CART TOGGLE =========
+  // =====================================================
+  function toggleCart(e) {
+    e.preventDefault();
+    renderCart();
+    document.getElementById('cart-sidebar').classList.toggle('open');
+    document.getElementById('cart-overlay').classList.toggle('open');
+  }
+  
+  function closeCart() {
+    document.getElementById('cart-sidebar').classList.remove('open');
+    document.getElementById('cart-overlay').classList.remove('open');
+  }
+
+  // =====================================================
+  // ======== FAV TOGGLE =========
+  // =====================================================
+  function toggleFav(btn) {
+    const isFav = btn.textContent === '❤️';
+    btn.textContent = isFav ? '🤍' : '❤️';
+    if (!isFav) showToast('❤️ প্রিয় তালিকায় যোগ হয়েছে!');
+  }
+
+  // =====================================================
+  // ======== CATEGORY FILTER =========
+  // =====================================================
+  function filterCategory(el, cat) {
+    document.querySelectorAll('.cat-pill').forEach(function(p) { 
+      p.classList.remove('active'); 
+    });
+    el.classList.add('active');
+    document.querySelectorAll('.food-card').forEach(function(card) {
+      card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
+    });
+  }
+
+  // =====================================================
+  // ======== SEARCH =========
+  // =====================================================
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const q = this.value.toLowerCase().trim();
+      document.querySelectorAll('.food-card').forEach(function(card) {
+        const name = card.dataset.name ? card.dataset.name.toLowerCase() : '';
+        card.style.display = (!q || name.includes(q)) ? 'block' : 'none';
+      });
+    });
+  }
+
+  // =====================================================
+  // ======== PROMO CODE =========
+  // =====================================================
+  function copyCode() {
+    navigator.clipboard.writeText('FOODBD100').then(function() {
+      showToast('📋 কোড কপি হয়েছে: FOODBD100');
+    });
+  }
+
+  // =====================================================
+  // ======== TOAST =========
+  // =====================================================
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(function() { 
+      toast.classList.remove('show'); 
+    }, 3500);
+  }
+
+  // =====================================================
+  // ======== AUTH =========
+  // =====================================================
+  function openAuth(e, tab) {
+    e.preventDefault();
+    document.getElementById('auth-modal').classList.add('open');
+    switchAuthTab(tab);
+  }
+  
+  function closeAuth() { 
+    document.getElementById('auth-modal').classList.remove('open'); 
+  }
+  
+  function switchAuthTab(tab) {
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const loginTab = document.getElementById('login-tab');
+    const signupTab = document.getElementById('signup-tab');
+    
+    if (loginForm) loginForm.style.display = tab === 'login' ? 'block' : 'none';
+    if (signupForm) signupForm.style.display = tab === 'signup' ? 'block' : 'none';
+    if (loginTab) loginTab.classList.toggle('active', tab === 'login');
+    if (signupTab) signupTab.classList.toggle('active', tab === 'signup');
+  }
+
+  function doLogin() {
+    const phoneInput = document.getElementById('login-phone');
+    const passInput = document.getElementById('login-pass');
+    
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+    const pass = passInput ? passInput.value : '';
+    
+    if (!phone || !pass) { 
+      showToast('⚠️ সব তথ্য পূরণ করুন'); 
+      return; 
+    }
+    
+    const user = dbFindUser(phone);
+    if (!user) { 
+      showToast('❌ ব্যবহারকারী পাওয়া যায়নি'); 
+      return; 
+    }
+    if (user.password !== btoa(pass)) { 
+      showToast('❌ পাসওয়ার্ড ভুল'); 
+      return; 
+    }
+    
+    dbSetSession(user);
+    updateNavForUser(user);
+    closeAuth();
+    showToast('✅ স্বাগতম ' + user.name + '! লগইন সফল 🎉');
+  }
+
+  function doSignup() {
+    const nameInput = document.getElementById('su-name');
+    const phoneInput = document.getElementById('su-phone');
+    const emailInput = document.getElementById('su-email');
+    const passInput = document.getElementById('su-pass');
+    const addrInput = document.getElementById('su-addr');
+    
+    const name = nameInput ? nameInput.value.trim() : '';
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+    const email = emailInput ? emailInput.value.trim() : '';
+    const pass = passInput ? passInput.value : '';
+    const addr = addrInput ? addrInput.value.trim() : '';
+    
+    if (!name || !phone || !pass) { 
+      showToast('⚠️ নাম, ফোন ও পাসওয়ার্ড দিন'); 
+      return; 
+    }
+    if (!/^01[3-9]\d{8}$/.test(phone)) { 
+      showToast('⚠️ সঠিক বাংলাদেশ নম্বর দিন'); 
+      return; 
+    }
+    if (pass.length < 6) { 
+      showToast('⚠️ পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে'); 
+      return; 
+    }
+    if (dbFindUser(phone)) { 
+      showToast('⚠️ এই নম্বরে অ্যাকাউন্ট আছে'); 
+      return; 
+    }
+    
+    const user = {
+      name: name,
+      phone: phone,
+      email: email,
+      password: btoa(pass),
+      address: addr,
+      date: new Date().toLocaleString('bn-BD')
+    };
+    
+    dbSaveUser(user);
+    dbSetSession(user);
+    updateNavForUser(user);
+    closeAuth();
+    showToast('🎉 ' + name + ', অ্যাকাউন্ট তৈরি হয়েছে! স্বাগতম!');
+    
+    setTimeout(function() { 
+      openWhatsApp('হ্যালো! আমি FoodDoggy তে নতুন সাইনআপ করেছি। আমার নাম ' + name + ', নম্বর ' + phone); 
+    }, 1500);
+  }
+
+  function initSession() {
+    const user = dbGetSession();
+    if (user) updateNavForUser(user);
+  }
+
+  function updateNavForUser(user) {
+    const nav = document.getElementById('auth-nav');
+    if (!nav) return;
+    
+    nav.innerHTML = `
+      <div class="user-nav" onclick="showUserMenu()">👤 ${user.name.split(' ')[0]} ▾</div>
+      <a href="#" style="font-size:12px;color:var(--text-muted)" onclick="logout(event)">লগআউট</a>
+    `;
+  }
+  
+  function logout(e) {
+    e.preventDefault();
+    dbClearSession();
+    location.reload();
+  }
+
+  // =====================================================
+  // ======== CONTACT FORM =========
+  // =====================================================
+  function submitContact(e) {
+    e.preventDefault();
+    
+    const nameInput = document.getElementById('c-name');
+    const phoneInput = document.getElementById('c-phone');
+    const subjectInput = document.getElementById('c-subject');
+    const msgInput = document.getElementById('c-msg');
+    
+    const name = nameInput ? nameInput.value.trim() : '';
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+    const subject = subjectInput ? subjectInput.value.trim() : '';
+    const msg = msgInput ? msgInput.value.trim() : '';
+    
+    if (!name || !phone || !subject || !msg) { 
+      showToast('⚠️ সব তথ্য পূরণ করুন'); 
+      return; 
+    }
+    
+    dbSaveContact({
+      name: name,
+      phone: phone,
+      subject: subject,
+      msg: msg,
+      date: new Date().toLocaleString('bn-BD')
+    });
+    
+    if (nameInput) nameInput.value = '';
+    if (phoneInput) phoneInput.value = '';
+    if (subjectInput) subjectInput.value = '';
+    if (msgInput) msgInput.value = '';
+    
+    showToast('✅ বার্তা পাঠানো হয়েছে!');
+    
+    openWhatsApp('📧 নতুন যোগাযোগ!\n👤 ' + name + '\n📞 ' + phone + '\n📌 ' + subject + '\n💬 ' + msg);
+  }
+
+  // =====================================================
+  // ======== ADMIN PANEL =========
+  // =====================================================
+  const ADMIN_PASS = 'admin123';
+  
+  function openAdmin(e) {
+    e.preventDefault();
+    const pass = prompt('🔐 Admin পাসওয়ার্ড দিন:');
+    if (pass !== ADMIN_PASS) { 
+      if (pass !== null) showToast('❌ ভুল পাসওয়ার্ড'); 
+      return; 
+    }
+    loadAdminData();
+    document.getElementById('admin-panel').classList.add('open');
+  }
+  
+  function closeAdmin() { 
+    document.getElementById('admin-panel').classList.remove('open'); 
+  }
+
+  function loadAdminData() {
+    const orders = dbGetOrders();
+    const users = dbGetUsers();
+    const contacts = dbGetContacts();
+    const totalRevenue = orders.reduce(function(s, o) { 
+      return s + (o.total || 0); 
+    }, 0);
+
+    const stats = document.getElementById('admin-stats');
+    if (stats) {
+      stats.innerHTML = `
+        <div class="admin-stat"><div class="a-num">${orders.length}</div><div class="a-lbl">মোট অর্ডার</div></div>
+        <div class="admin-stat"><div class="a-num">৳${totalRevenue.toLocaleString()}</div><div class="a-lbl">মোট আয়</div></div>
+        <div class="admin-stat"><div class="a-num">${users.length}</div><div class="a-lbl">নিবন্ধিত ব্যবহারকারী</div></div>
+        <div class="admin-stat"><div class="a-num">${contacts.length}</div><div class="a-lbl">বার্তা</div></div>
+      `;
+    }
+
+    const ordersTbody = document.getElementById('orders-tbody');
+    if (ordersTbody) {
+      ordersTbody.innerHTML = orders.length === 0
+        ? '<tr><td colspan="8" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px">কোনো অর্ডার নেই</td></tr>'
+        : orders.map(function(o) {
+            return `
+              <tr>
+                <td style="color:var(--gold);font-weight:700">#${o.id}</td>
+                <td>${o.customerName}</td>
+                <td style="max-width:150px;font-size:12px">${o.address}</td>
+                <td style="max-width:180px;font-size:12px">${o.items}</td>
+                <td style="color:var(--gold);font-weight:700">৳${o.total}</td>
+                <td>${o.payment}</td>
+                <td><span class="order-status status-${o.status}">${o.status === 'confirmed' ? '✅ কনফার্ম' : '⏳ পেন্ডিং'}</span></td>
+                <td><button class="wa-notify-btn" onclick="notifyCustomer('${o.customerName}','${o.id}','${o.phone}')">📲 জানান</button></td>
+              </tr>
+            `;
+          }).join('');
+    }
+
+    const usersTbody = document.getElementById('users-tbody');
+    if (usersTbody) {
+      usersTbody.innerHTML = users.length === 0
+        ? '<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px">কোনো ব্যবহারকারী নেই</td></tr>'
+        : users.map(function(u) {
+            return `
+              <tr>
+                <td>${u.name}</td>
+                <td>${u.phone}</td>
+                <td>${u.email || '-'}</td>
+                <td>${u.address || '-'}</td>
+                <td style="font-size:12px">${u.date}</td>
+              </tr>
+            `;
+          }).join('');
+    }
+
+    const contactsTbody = document.getElementById('contacts-tbody');
+    if (contactsTbody) {
+      contactsTbody.innerHTML = contacts.length === 0
+        ? '<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px">কোনো বার্তা নেই</td></tr>'
+        : contacts.map(function(c) {
+            return `
+              <tr>
+                <td>${c.name}</td>
+                <td>${c.phone}</td>
+                <td>${c.subject}</td>
+                <td style="max-width:200px;font-size:12px">${c.msg}</td>
+                <td style="font-size:12px">${c.date}</td>
+              </tr>
+            `;
+          }).join('');
+    }
+  }
+
+  function notifyCustomer(name, orderId, phone) {
+    const cleanPhone = phone.replace(/^0/, '');
+    const msg = '🐶 *FoodDoggy Bangladesh*\n\nহ্যালো ' + name + '!\n\n✅ আপনার অর্ডার #' + orderId + ' কনফার্ম হয়েছে!\n🛵 আমাদের ডেলিভারি ম্যান শীঘ্রই রওনা দেবে।\n⏱️ আনুমানিক সময়: ৩০ মিনিট\n\nধন্যবাদ 🙏';
+    window.open('https://wa.me/880' + cleanPhone + '?text=' + encodeURIComponent(msg), '_blank');
+  }
+
+  // Make functions globally available
+  window.scrollToFood = scrollToFood;
+  window.filterCategory = filterCategory;
+  window.addToCart = addToCart;
+  window.toggleFav = toggleFav;
+  window.changeQty = changeQty;
+  window.removeItem = removeItem;
+  window.selectPay = selectPay;
+  window.checkCoupon = checkCoupon;
+  window.placeOrder = placeOrder;
+  window.closeOrderModal = closeOrderModal;
+  window.orderViaWhatsApp = orderViaWhatsApp;
+  window.openWhatsApp = openWhatsApp;
+  window.toggleWaMenu = toggleWaMenu;
+  window.toggleCart = toggleCart;
+  window.closeCart = closeCart;
+  window.copyCode = copyCode;
+  window.openAuth = openAuth;
+  window.closeAuth = closeAuth;
+  window.switchAuthTab = switchAuthTab;
+  window.doLogin = doLogin;
+  window.doSignup = doSignup;
+  window.logout = logout;
+  window.submitContact = submitContact;
+  window.openAdmin = openAdmin;
+  window.closeAdmin = closeAdmin;
+  window.notifyCustomer = notifyCustomer;
+</script>
+
+</body>
+</html>
